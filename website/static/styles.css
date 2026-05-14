@@ -1,15 +1,18 @@
 header {
     position: absolute;
-    
+    color: white;
 }
 
 a {
     margin-left: 25px;
     margin-right: 25px;
     text-decoration: none;
-    color: black;
+    color: white;
 }
 
 nav {
     text-align: center;
+    background-color: black;
+    margin: -8px;
+    height: 25px;
 }
