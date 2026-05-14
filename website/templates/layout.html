@@ -9,7 +9,10 @@
 <body>
     <header>广东 Store</header>
     <nav>
-        <a href="store.html">Store</a><a href="wishlist.html">Wishlist</a><a href="checkout.html">Checkout</a><a href="profile.html">Profile</a>
+        <a href="{{ url_for('store') }}">Store</a>
+        <a href="{{ url_for('wishlist') }}">Wishlist</a>
+        <a href="{{ url_for('checkout') }}">Checkout</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
     </nav>
     {% block body %}
     {% endblock %}
