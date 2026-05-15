@@ -1,12 +1,14 @@
 header {
     position: absolute;
     color: white;
+    font-size: 20px;
 }
 
 a {
     margin-left: 25px;
     margin-right: 25px;
     text-decoration: none;
+    font-size: 25px;
     color: white;
 }
 
@@ -14,5 +16,5 @@ nav {
     text-align: center;
     background-color: black;
     margin: -8px;
-    height: 25px;
+    height: 30px;
 }
