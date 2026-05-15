@@ -25,11 +25,11 @@ def profile():
     return render_template('profile.html')
 
 @app.route('/login')
-def profile():
+def login():
     return render_template('login.html')
 
 @app.route('/signup')
-def profile():
+def signup():
     return render_template('signup.html')
 
 if __name__ == '__main__':
