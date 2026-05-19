@@ -19,24 +19,26 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+def query_db(query, args=(), one=False):
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
 @app.route('/')
-def home():
+def store():
     db = get_db()
     cursor = db.cursor()
-    
-    # 1. Fetch data from your database table
-    cursor.execute("SELECT * FROM products")
-    all_products = cursor.fetchall()
-    
-    # 2. Extract the first row if data exists, otherwise use fallback text
-    product_data = all_products[0] if all_products else ["", "", "Default Product", "", ""]
-    
-    # 3. Pass the variable into the template using products=product_data
-    return render_template('store.html', products=product_data)
 
-@app.route('/store')
-def store():
-    return render_template('store.html')
+    tables = ['products', 'customers', 'wishlist', 'categories', 'orders']
+    
+    all_database_data = {}
+    for table in tables:
+        cursor.execute(f"SELECT * FROM {table}")
+        all_database_data[table] = cursor.fetchall()
+    
+    return render_template('store.html', database=all_database_data)
+
 
 @app.route('/wishlist')
 def wishlist():
