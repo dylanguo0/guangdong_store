@@ -3,8 +3,10 @@
 
 <!-- Loop to display every product and its image -->
 {% for product in database['products'] %}
-    <p>{{ product[2] }}</p>
     <img src="{{ product[4] }}" alt="{{ product[2] }}">
+    <p>{{ product[2] }} <br> ${{ product[3]}}</p>
+    <button type="button">Add to Cart</button><br>
+    <button type="button">Wishlist</button><br>
 {% endfor %}
 
 {% endblock %}
