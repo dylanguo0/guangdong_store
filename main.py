@@ -20,9 +20,7 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-# App route for store page
-@app.route('/')
-def store():
+def database():
     db = get_db()
     cursor = db.cursor()
 
@@ -34,39 +32,61 @@ def store():
     for table in tables:
         cursor.execute(f"SELECT * FROM {table}")
         all_database_data[table] = cursor.fetchall()
-    
+    return all_database_data
+
+# App route for store page
+@app.route('/')
+def store():
+    # Gets the tables from the database
+    all_database_data = database()
+
     # Renders the store page
     return render_template('store.html', database=all_database_data)
 
 # App route for wishlist page
 @app.route('/wishlist')
 def wishlist():
+    # Gets the tables from the database
+    all_database_data = database()
+
     # Renders the wishlist page
-    return render_template('wishlist.html')
+    return render_template('wishlist.html', database=all_database_data)
 
 # App route for checkout page
 @app.route('/checkout')
 def checkout():
+    # Gets the tables from the database
+    all_database_data = database()
+
     # Renders the checkout page
-    return render_template('checkout.html')
+    return render_template('checkout.html', database=all_database_data)
 
 # App route for profile page
 @app.route('/profile')
 def profile():
+    # Gets the tables from the database
+    all_database_data = database()
+
     # Renders the profile page
-    return render_template('profile.html')
+    return render_template('profile.html', database=all_database_data)
 
 # App route for login page
 @app.route('/login')
 def login():
+    # Gets the tables from the database
+    all_database_data = database()
+
     # Renders the login page
-    return render_template('login.html')
+    return render_template('login.html', database=all_database_data)
 
 # App route for signup page
 @app.route('/signup')
 def signup():
+    # Gets the tables from the database
+    all_database_data = database()
+
     # Renders the signup page
-    return render_template('signup.html')
+    return render_template('signup.html', database=all_database_data)
 
 # Runs the app
 if __name__ == '__main__':
