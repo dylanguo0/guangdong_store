@@ -1,14 +1,19 @@
+@import url(https://fonts.googleapis.com/css?family=Inter);
+@import url(https://fonts.googleapis.com/css?family=Arvo);
+
 body {
     background-color: #424242;
 }
 
 header {
+    font-family: 'Inter';
     position: absolute;
     color: white;
     font-size: 20px;
 }
 
 a {
+    font-family: 'Inter';
     margin-left: 25px;
     margin-right: 25px;
     text-decoration: none;
@@ -23,11 +28,23 @@ nav {
     height: 30px;
 }
 
+h1 {
+    font-family: 'Arvo';
+    font-size: 50px;
+    text-align: center;
+    color: white;
+}
+
+p {
+    font-family: 'Inter';
+}
+
 img {
     width: 150px;
 }
 
 button {
+    font-family: 'Inter';
     width: 150px;
     height: 25px;
     border-width: 0;
