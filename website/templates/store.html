@@ -6,8 +6,8 @@
 {% for product in database['products'] %}
     <div class="product-card">
         <img src="{{ product[4] }}" alt="{{ product[2] }}">
-        <p>{{ product[2] }} ${{ product[3]}}</p>
-        <button type="button">Add to Cart</button>
+        <p>{{ product[2] }} <br> ${{ product[3]}}</p>
+        <button type="button">Add to Cart</button><br>
         <button type="button">Wishlist</button>
     </div>
 {% endfor %}
