@@ -53,6 +53,14 @@ button {
     margin-bottom: 5px;
 }
 
+button:hover {
+    background-color: #1F92DA;;
+}
+
+button:active {
+    background-color: #1A84C7;
+}
+
 .product-card {
     width: 170px;
     border: 3px solid black;
