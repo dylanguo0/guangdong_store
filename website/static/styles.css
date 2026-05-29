@@ -61,7 +61,28 @@ button:active {
     background-color: #1A84C7;
 }
 
+button.remove {
+    background-color: #FF9999;
+}
+
+button.remove:hover {
+    background-color: #FF8080;;
+}
+
+button.remove:active {
+    background-color: #F25959;
+}
+
 .product-card {
+    width: 170px;
+    border: 3px solid black;
+    padding: 10px;
+    text-align: center;
+    border-radius: 10px;
+    background-color: #D9D9D9;
+}
+
+.wishlist-card {
     width: 170px;
     border: 3px solid black;
     padding: 10px;
