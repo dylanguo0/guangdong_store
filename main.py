@@ -53,10 +53,11 @@ def wishlist():
     query = """
             SELECT products.*, wishlist.username FROM wishlist
             LEFT JOIN products ON products.product_id = wishlist.product_id
-            WHERE wishlist.username = john_doe23
+            WHERE wishlist.username = ?
     """
+    user = "john_doe23"
 
-    cursor.execute(query)
+    cursor.execute(query, (user,))
     wishlist_data = cursor.fetchall()
 
     # Renders the wishlist page
