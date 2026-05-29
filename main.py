@@ -20,6 +20,7 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+# Gets the database
 def database():
     db = get_db()
     cursor = db.cursor()
@@ -46,11 +47,20 @@ def store():
 # App route for wishlist page
 @app.route('/wishlist')
 def wishlist():
-    # Gets the tables from the database
-    all_database_data = database()
+    db = get_db()
+    cursor = db.cursor()
+
+    query = """
+            SELECT products.*, wishlist.username FROM wishlist
+            LEFT JOIN products ON products.product_id = wishlist.product_id
+            WHERE wishlist.username = john_doe23
+    """
+
+    cursor.execute(query)
+    wishlist_data = cursor.fetchall()
 
     # Renders the wishlist page
-    return render_template('wishlist.html', database=all_database_data)
+    return render_template('wishlist.html', database=wishlist_data)
 
 # App route for checkout page
 @app.route('/checkout')
