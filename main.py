@@ -50,13 +50,17 @@ def wishlist():
     db = get_db()
     cursor = db.cursor()
 
+    # Joins the products table onto the wishlist table
     query = """
             SELECT products.*, wishlist.username FROM wishlist
             LEFT JOIN products ON products.product_id = wishlist.product_id
             WHERE wishlist.username = ?
     """
+    
+    # Which user's wishlist to look at
     user = "john_doe23"
 
+    # Fetches the data
     cursor.execute(query, (user,))
     wishlist_data = cursor.fetchall()
 

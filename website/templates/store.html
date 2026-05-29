@@ -1,9 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>Store</h1>
-<!-- Loop to display every product and its image -->
+<!-- Grid for the  products to go in -->
 <div class="product-grid">
+<!-- Loop to display every product and its image -->
 {% for product in database['products'] %}
+    <!-- Card for the products to go into -->
     <div class="product-card">
         <img src="{{ product[4] }}" alt="{{ product[2] }}">
         <p>{{ product[2] }} <br> ${{ "%.2f" | format(product[3] | float) }}</p>
