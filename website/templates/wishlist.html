@@ -4,8 +4,13 @@
 <!-- Card for the wishlist products to go in -->
 <div class="wishlist-card">
     <img src="{{ database[0][4] }}" alt="{{ database[0][2] }}">
-    <b>{{ database[0][2] }}</b> <p>${{ database[0][3] }}</p>
-    <button type="button">Add to Cart</button><br>
-    <button type="button" class="remove">Remove</button>
+    <div class="wishlist-card-text">
+        <b>{{ database[0][2] }}</b>
+        <p>${{ database[0][3] }}</p>
+    </div>
+    <div class="wishlist-card-buttons">
+        <button type="button">Add to Cart</button><br>
+        <button type="button" class="remove">Remove</button>
+    </div>
 </div>
 {% endblock %}
