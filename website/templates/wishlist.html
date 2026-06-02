@@ -1,14 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>Wishlist</h1>
+<!-- Grid for the wishlist products to go in -->
 <div class="wishlist-grid">
-<!-- Card for the wishlist products to go in -->
+<!-- Loop to display every wishlist product and its image -->
 {% for product in database %}
+    <!-- Card for the wishlist products to go in -->
     <div class="wishlist-card">
         <img src="{{ product[4] }}" alt="{{ product[2] }}">
         <div class="wishlist-card-text">
             <b>{{ product[2] }}</b>
-            <p>${{ product[3] }}</p>
+            <p>${{ "%.2f" | format(product[3] | float) }}</p>
         </div>
         <div class="wishlist-card-buttons">
             <button type="button">Add to Cart</button><br>
