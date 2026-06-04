@@ -116,14 +116,20 @@ button.remove:active {
 .checkout-card {
     width: 1000px;
     border: 3px solid black;
-    padding: 10px;
-    text-align: center;
+    padding: 30px;
+    text-align: left;
     border-radius: 10px;
     background-color: #D9D9D9;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
     gap: 20px;
+}
+
+.checkout-header, 
+.checkout-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    padding: 8px 0;
 }
 
 /* GRIDS */

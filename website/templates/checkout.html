@@ -2,14 +2,15 @@
 {% block body %}
 <h1>Checkout</h1>
 <div class="checkout-card">
-    <div class="checkout-products">
+    <div class="checkout-header">
         <b>Products</b>
-    </div>
-    <div class="checkout-prices">
         <b>Price</b>
-    </div>
-    <div class="checkout-remove">
         <b>Actions</b>
+    </div>
+    <div class="checkout-row">
+        <p>{{ database['products'][0][2] }}</p>
+        <p>${{ "%.2f" | format(database['products'][0][3] | float) }}</p>
+        <button type="button" class="remove">Remove</button>
     </div>
 </div>
 {% endblock %}
