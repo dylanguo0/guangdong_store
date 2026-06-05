@@ -117,7 +117,7 @@ button.remove:active {
     width: 1000px;
     border: 3px solid black;
     padding: 30px;
-    text-align: left;
+    text-align: center;
     border-radius: 10px;
     background-color: #D9D9D9;
     display: grid;
@@ -129,7 +129,15 @@ button.remove:active {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     align-items: center;
-    padding: 8px 0;
+    padding: 0;
+}
+
+.checkout-row p {
+    margin: 0;
+}
+
+.checkout-row .remove {
+    margin: auto;
 }
 
 /* GRIDS */

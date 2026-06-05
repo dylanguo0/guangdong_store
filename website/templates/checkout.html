@@ -7,10 +7,12 @@
         <b>Price</b>
         <b>Actions</b>
     </div>
-    <div class="checkout-row">
-        <p>{{ database['products'][0][2] }}</p>
-        <p>${{ "%.2f" | format(database['products'][0][3] | float) }}</p>
-        <button type="button" class="remove">Remove</button>
-    </div>
+    {% for product in database['products'] %}
+        <div class="checkout-row">
+            <p>{{ product[2] }}</p>
+            <p>${{ "%.2f" | format(product[3] | float) }}</p>
+            <button type="button" class="remove">Remove</button>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}
