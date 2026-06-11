@@ -35,6 +35,13 @@ h1 {
     color: white;
 }
 
+h2 {
+    font-family: 'Arvo';
+    font-size: 30px;
+    text-align: center;
+    margin-top: 0;
+}
+
 p {
     font-family: 'Inter';
 }
@@ -113,6 +120,11 @@ button.remove:active {
     object-fit: cover;
 }
 
+.flex-container {
+    display: flex;
+    gap: 100px;
+}
+
 .checkout-card {
     width: 1000px;
     border: 3px solid black;
@@ -138,6 +150,24 @@ button.remove:active {
 
 .checkout-row .remove {
     margin: auto;
+}
+
+.order-summary-card {
+    width: 500px;
+    border: 3px solid black;
+    padding: 30px;
+    text-align: center;
+    border-radius: 10px;
+    background-color: #D9D9D9;
+    gap: 20px;
+}
+
+.order-summary-card p {
+    font-size: 20px;
+}
+
+.order-summary-card button {
+    margin: 10px 0;
 }
 
 /* GRIDS */
