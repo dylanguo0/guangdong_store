@@ -8,7 +8,7 @@
             <b>Price</b>
             <b>Actions</b>
         </div>
-        {% for product in database['products'] %}
+        {% for product in database %}
             <div class="checkout-row">
                 <p>{{ product[2] }}</p>
                 <p>${{ "%.2f" | format(product[3] | float) }}</p>
@@ -18,7 +18,7 @@
     </div>
     <div class="order-summary-card">
         <h2>Order Summary</h2>
-        <p><strong>Total price:</strong> ${{ "%.2f" | format(database['products'] | map(attribute=3) | sum | float) }}</p>
+        <p><strong>Total price:</strong> ${{ "%.2f" | format(database | map(attribute=3) | sum | float) }}</p>
         <button type="button">Submit Order</button><br>
         <button type="button" class="remove">Clear Cart</button><br>
     </div>

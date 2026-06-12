@@ -26,7 +26,7 @@ def database():
     cursor = db.cursor()
 
     # Define the database tables
-    tables = ['products', 'customers', 'wishlist', 'categories', 'orders']
+    tables = ['products', 'customers', 'wishlist', 'categories', 'checkout', 'orders']
     
     # Loops through each table and fetches it's rows
     all_database_data = {}
@@ -70,11 +70,25 @@ def wishlist():
 # App route for checkout page
 @app.route('/checkout')
 def checkout():
-    # Gets the tables from the database
-    all_database_data = database()
+    db = get_db()
+    cursor = db.cursor()
+
+    # Joins the products table onto the wishlist table
+    query = """
+            SELECT products.*, checkout.username FROM checkout
+            LEFT JOIN products ON products.product_id = checkout.product_id
+            WHERE checkout.username = ?
+    """
+    
+    # Which user's wishlist to look at
+    user = "john_doe23"
+
+    # Fetches the data
+    cursor.execute(query, (user,))
+    checkout_data = cursor.fetchall()
 
     # Renders the checkout page
-    return render_template('checkout.html', database=all_database_data)
+    return render_template('checkout.html', database=checkout_data)
 
 # App route for profile page
 @app.route('/profile')
