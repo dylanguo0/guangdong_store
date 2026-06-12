@@ -98,8 +98,9 @@ def profile():
 
     # Joins the products table onto the wishlist table
     query = """
-            SELECT products.*, orders.username FROM orders
+            SELECT customers.*, products.*, orders.username FROM orders
             LEFT JOIN products ON products.product_id = orders.product_id
+            LEFT JOIN customers ON customers.username = orders.username
             WHERE orders.username = ?
     """
     
