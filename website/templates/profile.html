@@ -1,4 +1,17 @@
 {% extends "layout.html" %}
 {% block body %}
-    <p>Test</p>
+<h1>Profile</h1>
+<div class="orders-card">
+    <h2>Orders</h2>
+    <div class="orders-header">
+        <b>Products</b>
+        <b>Price</b>
+    </div>
+    {% for product in database %}
+    <div class="orders-row">
+        <p>{{ product[2] }}</p>
+        <p>${{ "%.2f" | format(product[3] | float) }}</p>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

@@ -93,11 +93,25 @@ def checkout():
 # App route for profile page
 @app.route('/profile')
 def profile():
-    # Gets the tables from the database
-    all_database_data = database()
+    db = get_db()
+    cursor = db.cursor()
+
+    # Joins the products table onto the wishlist table
+    query = """
+            SELECT products.*, orders.username FROM orders
+            LEFT JOIN products ON products.product_id = orders.product_id
+            WHERE orders.username = ?
+    """
+    
+    # Which user's wishlist to look at
+    user = "john_doe23"
+
+    # Fetches the data
+    cursor.execute(query, (user,))
+    order_data = cursor.fetchall()
 
     # Renders the profile page
-    return render_template('profile.html', database=all_database_data)
+    return render_template('profile.html', database=order_data)
 
 # App route for login page
 @app.route('/login')
