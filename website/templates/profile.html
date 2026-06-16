@@ -1,24 +1,27 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>Profile</h1>
-<div class="orders-card">
-    <h2>Orders</h2>
-    <div class="orders-header">
-        <b>Products</b>
-        <b>Price</b>
+<div class="flex-container">
+    <div class="orders-card">
+        <h2>Orders</h2>
+        <div class="orders-header">
+            <b>Products</b>
+            <b>Price</b>
+        </div>
+        {% for product in database %}
+        <div class="orders-row">
+            <p>{{ product[8] }}</p>
+            <p>${{ "%.2f" | format(product[9] | float) }}</p>
+        </div>
+        {% endfor %}
     </div>
-    {% for product in database %}
-    <div class="orders-row">
-        <p>{{ product[8] }}</p>
-        <p>${{ "%.2f" | format(product[9] | float) }}</p>
+    <div class="details-card">
+        <h2>Details</h2>
+        <p>First name: {{ database[0][2] }}</p>
+        <p>Last name: {{ database[0][3] }}</p>
+        <p>Email: {{ database[0][5] }}</p>
+        <p>Address: {{ database[0][4] }}</p>
+        <button type="button" class="remove">Log Out</button>
     </div>
-    {% endfor %}
-</div>
-<div class="details-card">
-    <h2>Details</h2>
-    <p>First name: {{ database[0][2] }}</p>
-    <p>Last name: {{ database[0][3] }}</p>
-    <p>Email: {{ database[0][5] }}</p>
-    <p>Address: {{ database[0][4] }}</p>
 </div>
 {% endblock %}
