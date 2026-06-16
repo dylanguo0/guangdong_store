@@ -1,13 +1,17 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>Profile</h1>
+<!-- Flex container to put divs side by side -->
 <div class="flex-container">
+    <!-- Card for the order products to go in -->
     <div class="orders-card">
+        <!-- Headings for the products -->
         <h2>Orders</h2>
         <div class="orders-header">
             <b>Products</b>
             <b>Price</b>
         </div>
+        <!-- Loop to display every order product -->
         {% for product in database %}
         <div class="orders-row">
             <p>{{ product[8] }}</p>
@@ -15,6 +19,7 @@
         </div>
         {% endfor %}
     </div>
+    <!-- Users details -->
     <div class="details-card">
         <h2>Details</h2>
         <p>First name: {{ database[0][2] }}</p>
