@@ -1,4 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-    <p>Test</p>
+<h1>Profile</h1>
+<!-- Card for the login details to go in -->
+<div class="login-card">
+    <h2>Log In</h2>
+    <h3>Username</h3>
+    <input type="text" id="username" name="username" placeholder="Enter your username">
+    <h3>Password</h3>
+    <input type="text" id="password" name="password" placeholder="Enter your password">
+    <p>No account?</p> <a href="{{ url_for('signup') }}">Sign Up</a>
+</div>
 {% endblock %}

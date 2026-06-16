@@ -12,10 +12,10 @@
 
     <!-- Navigation bar links -->
     <nav>
-        <a href="{{ url_for('store') }}">Store</a>
-        <a href="{{ url_for('wishlist') }}">Wishlist</a>
-        <a href="{{ url_for('checkout') }}">Checkout</a>
-        <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('store') }}" class="navbar">Store</a>
+        <a href="{{ url_for('wishlist') }}" class="navbar">Wishlist</a>
+        <a href="{{ url_for('checkout') }}" class="navbar">Checkout</a>
+        <a href="{{ url_for('profile') }}" class="navbar">Profile</a>
     </nav>
     {% block body %}
     {% endblock %}
