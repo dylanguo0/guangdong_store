@@ -1,4 +1,35 @@
 {% extends "layout.html" %}
 {% block body %}
-    <p>Test</p>
+<h1>Sign Up</h1>
+<div class="signup-card">
+    <h2>Sign Up</h2>
+    <div class="signup-grid">
+        <div>
+            <h3>Email</h3>
+            <input type="text" id="email" name="email" placeholder="Email">
+        </div>
+        <div>
+            <h3>Address</h3>
+            <input type="text" id="address" name="address" placeholder="Address">
+        </div>
+        <div>
+            <h3>First name</h3>
+            <input type="text" id="firstname" name="firstname" placeholder="First name">
+        </div>
+        <div>
+            <h3>Last name</h3>
+            <input type="text" id="lastname" name="lastname" placeholder="Last name">
+        </div>
+        <div>
+            <h3>Username</h3>
+            <input type="text" id="username" name="username" placeholder="Username">
+        </div>
+        <div>
+            <h3>Password</h3>
+            <input type="text" id="password" name="password" placeholder="Password">
+        </div>
+    </div>
+    <button type="button">Sign Up</button><br>
+    <p>Already have an account?</p> <a href="{{ url_for('login') }}">Log In</a>
+</div>
 {% endblock %}
