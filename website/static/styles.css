@@ -103,6 +103,38 @@ button.remove:active {
     background-color: #D9D9D9;
 }
 
+.filters-card {
+    width: 250px;
+    border: 3px solid black;
+    padding: 10px;
+    text-align: left;
+    border-radius: 10px;
+    background-color: #D9D9D9;
+    margin-top: 25px;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+label {
+    font-family: 'Inter';
+    font-size: 20px;
+}
+
+#minimum,
+#maximum {
+    width: 100px;
+    height: 20px;
+}
+
+.filters-card button {
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+}
+
 .wishlist-card {
     width: 500px;
     border: 3px solid black;
