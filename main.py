@@ -26,7 +26,7 @@ def database():
     cursor = db.cursor()
 
     # Define the database tables
-    tables = ['products', 'customers', 'wishlist', 'categories', 'checkout', 'orders']
+    tables = ['products', 'customers', 'wishlist', 'categories', 'checkout', 'order_ids', 'order_items']
     
     # Loops through each table and fetches it's rows
     all_database_data = {}
@@ -98,10 +98,11 @@ def profile():
 
     # Joins the products table onto the wishlist table
     query = """
-            SELECT customers.*, products.*, orders.username FROM orders
-            LEFT JOIN products ON products.product_id = orders.product_id
-            LEFT JOIN customers ON customers.username = orders.username
-            WHERE orders.username = ?
+            SELECT customers.*, products.*, order_ids.*, order_items.* FROM order_items
+            LEFT JOIN order_ids ON order_ids.order_id = order_items.order_id
+            LEFT JOIN products ON products.product_id = order_items.product_id
+            LEFT JOIN customers ON customers.username = order_ids.username
+            WHERE order_ids.username = ?
     """
     
     # Which user's wishlist to look at
