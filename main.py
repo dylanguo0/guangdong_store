@@ -1,4 +1,4 @@
-from flask import Flask, g, render_template
+from flask import Flask, g, render_template, request, redirect, url_for, session
 import sqlite3
 
 # Defines the database constant
@@ -7,6 +7,8 @@ DATABASE = 'guangdong_store.db'
 app = Flask(__name__,
             template_folder='website/templates', 
             static_folder='website/static')
+
+app.config['SECRET_KEY'] = 'test'
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -36,7 +38,7 @@ def database():
     return all_database_data
 
 # App route for store page
-@app.route('/')
+@app.route('/store')
 def store():
     # Gets the tables from the database
     all_database_data = database()
@@ -58,7 +60,7 @@ def wishlist():
     """
     
     # Which user's wishlist to look at
-    user = "john_doe23"
+    user = session.get('user')
 
     # Fetches the data
     cursor.execute(query, (user,))
@@ -81,7 +83,7 @@ def checkout():
     """
     
     # Which user's wishlist to look at
-    user = "john_doe23"
+    user = session.get('user')
 
     # Fetches the data
     cursor.execute(query, (user,))
@@ -106,8 +108,7 @@ def profile():
     """
     
     # Which user's wishlist to look at
-    user = "john_doe23"
-
+    user = session.get('user')
     # Fetches the data
     cursor.execute(query, (user,))
     order_data = cursor.fetchall()
@@ -116,13 +117,36 @@ def profile():
     return render_template('profile.html', database=order_data)
 
 # App route for login page
-@app.route('/login')
+@app.route('/', methods=["GET", "POST"])
 def login():
-    # Gets the tables from the database
-    all_database_data = database()
+    if request.method == "POST":
+        # Get the form data
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # Fetch all data
+        all_tables = database()
+        
+        # Extract only the users table
+        users = all_tables.get("customers", []) 
+
+        # Loop through the list to look for a match
+        user_found = False
+        for user in users:
+            if user[0] == username and user[1] == password:
+                user_found = True
+                break
+
+        # Check credentials
+        if user_found:
+            session['user'] = username
+            return redirect(url_for("store"))
+        else:
+            return render_template("login.html",
+                                   error="Invalid username or password")
 
     # Renders the login page
-    return render_template('login.html', database=all_database_data)
+    return render_template('login.html', error=None)
 
 # App route for signup page
 @app.route('/signup')
