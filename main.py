@@ -157,6 +157,15 @@ def signup():
     # Renders the signup page
     return render_template('signup.html', database=all_database_data)
 
+# App route to logout
+@app.route('/logout')
+def logout():
+    # Logs out
+    session.clear() 
+    
+    # Returns to login page
+    return redirect(url_for('login'))
+
 # Runs the app
 if __name__ == '__main__':
     app.run(debug=True)

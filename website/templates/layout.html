@@ -13,9 +13,15 @@
     <!-- Navigation bar links -->
     <nav>
         <a href="{{ url_for('store') }}" class="navbar">Store</a>
-        <a href="{{ url_for('wishlist') }}" class="navbar">Wishlist</a>
-        <a href="{{ url_for('checkout') }}" class="navbar">Checkout</a>
-        <a href="{{ url_for('profile') }}" class="navbar">Profile</a>
+        {% if session.get('user') %}
+            <a href="{{ url_for('wishlist') }}" class="navbar">Wishlist</a>
+            <a href="{{ url_for('checkout') }}" class="navbar">Checkout</a>
+            <a href="{{ url_for('profile') }}" class="navbar">Profile</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="navbar">Wishlist</a>
+            <a href="{{ url_for('login') }}" class="navbar">Checkout</a>
+            <a href="{{ url_for('login') }}" class="navbar">Log In</a>
+        {% endif %}
     </nav>
     {% block body %}
     {% endblock %}
