@@ -97,24 +97,26 @@ def checkout():
 def profile():
     db = get_db()
     cursor = db.cursor()
+    user = session.get('user')
 
-    # Joins the products table onto the wishlist table
+    # Query for account details
+    cursor.execute("SELECT * FROM customers WHERE username = ?", (user,))
+    user_info = cursor.fetchone()
+
+    # Query for orders
     query = """
-            SELECT customers.*, products.*, order_ids.*, order_items.* FROM order_items
+            SELECT products.*, order_ids.*, order_items.* FROM order_items
             LEFT JOIN order_ids ON order_ids.order_id = order_items.order_id
             LEFT JOIN products ON products.product_id = order_items.product_id
-            LEFT JOIN customers ON customers.username = order_ids.username
             WHERE order_ids.username = ?
     """
-    
-    # Which user's wishlist to look at
-    user = session.get('user')
+
     # Fetches the data
     cursor.execute(query, (user,))
     order_data = cursor.fetchall()
 
     # Renders the profile page
-    return render_template('profile.html', database=order_data)
+    return render_template('profile.html', user_info=user_info, database=order_data)
 
 # App route for login page
 @app.route('/', methods=["GET", "POST"])
@@ -149,13 +151,54 @@ def login():
     return render_template('login.html', error=None)
 
 # App route for signup page
-@app.route('/signup')
+@app.route('/signup', methods=["GET", "POST"])
 def signup():
-    # Gets the tables from the database
-    all_database_data = database()
+    if request.method == "POST":
+        # Get the form data
+        email = request.form.get("email")
+        address = request.form.get("address")
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-    # Renders the signup page
-    return render_template('signup.html', database=all_database_data)
+        # Fetch all data
+        all_tables = database()
+        
+        # Extract only the users table
+        users = all_tables.get("customers", []) 
+
+        # Loop through the list to check if username is already taken
+        username_exists = False
+        for user in users:
+            if user[0] == username:  
+                username_exists = True
+                break
+
+        # Gives error if username is already in use
+        if username_exists:
+            return render_template("signup.html", 
+                                   error="Username already in use")
+        else:
+            db = get_db()
+            cursor = db.cursor()
+            
+            # Insert the user into the database
+            query = """
+                INSERT INTO customers (username, password, first_name, last_name, address, email) 
+                VALUES (?, ?, ?, ?, ?, ?)
+            """
+
+            # Saves the database
+            cursor.execute(query, (username, password, first_name, last_name, address, email))
+            db.commit()
+
+            # Logs them in then goes to the store page
+            session['user'] = username
+            return redirect(url_for("store"))
+
+    # Renders the signup page initially
+    return render_template('signup.html', error=None)
 
 # App route to logout
 @app.route('/logout')
