@@ -97,6 +97,8 @@ def checkout():
 def profile():
     db = get_db()
     cursor = db.cursor()
+
+    # Which users profile to look at
     user = session.get('user')
 
     # Query for account details
@@ -208,6 +210,41 @@ def logout():
     
     # Returns to login page
     return redirect(url_for('login'))
+
+# App route to add to cart
+@app.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    # Gets the product ID
+    product_id = request.form.get('product_id')
+    
+    # Gets the current logged in user
+    user = session.get('user')
+    
+    # Insert into checkout table
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO checkout (username, product_id) VALUES (?, ?)", (user, product_id))
+    db.commit()
+    
+    # Refreshes store page
+    return redirect(url_for('store'))
+
+@app.route('/add_to_wishlist', methods=['POST'])
+def add_to_wishlist():
+    # Gets the product ID
+    product_id = request.form.get('product_id')
+
+    # Gets the current logged in user
+    user = session.get('user')
+    
+    # Insert into wishlist table
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO wishlist (username, product_id) VALUES (?, ?)", (user, product_id))
+    db.commit()
+    
+    # Refreshes store page
+    return redirect(url_for('store'))
 
 # Runs the app
 if __name__ == '__main__':

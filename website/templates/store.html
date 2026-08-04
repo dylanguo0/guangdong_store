@@ -28,8 +28,20 @@
         <div class="product-card">
             <img src="{{ product[4] }}" alt="{{ product[2] }}">
             <p>{{ product[2] }} <br> ${{ "%.2f" | format(product[3] | float) }}</p>
-            <button type="button">Add to Cart</button><br>
-            <button type="button">Wishlist</button>
+
+        <!-- Add to Cart Form -->
+        <form action="{{ url_for('add_to_cart') }}" method="POST" style="display: inline;">
+            <input type="hidden" name="product_id" value="{{ product[0] }}">
+            <button type="submit">Add to Cart</button>
+        </form>
+        <br>
+
+        <!-- Wishlist Form -->
+        <form action="{{ url_for('add_to_wishlist') }}" method="POST" style="display: inline;">
+            <input type="hidden" name="product_id" value="{{ product[0] }}">
+            <button type="submit">Wishlist</button>
+        </form>
+        
         </div>
     {% endfor %}
     </div>
