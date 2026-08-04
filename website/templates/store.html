@@ -29,19 +29,19 @@
             <img src="{{ product[4] }}" alt="{{ product[2] }}">
             <p>{{ product[2] }} <br> ${{ "%.2f" | format(product[3] | float) }}</p>
 
-        <!-- Add to Cart Form -->
-        <form action="{{ url_for('add_to_cart') }}" method="POST" style="display: inline;">
-            <input type="hidden" name="product_id" value="{{ product[0] }}">
-            <button type="submit">Add to Cart</button>
-        </form>
-        <br>
+            <!-- Add to Cart Form -->
+            <form action="{{ url_for('add_to_cart') }}" method="POST" style="display: inline;">
+                <input type="hidden" name="product_id" value="{{ product[0] }}">
+                <input type="hidden" name="url" value="{{ request.path }}">
+                <button type="submit">Add to Cart</button>
+            </form>
+            <br>
 
-        <!-- Wishlist Form -->
-        <form action="{{ url_for('add_to_wishlist') }}" method="POST" style="display: inline;">
-            <input type="hidden" name="product_id" value="{{ product[0] }}">
-            <button type="submit">Wishlist</button>
-        </form>
-        
+            <!-- Wishlist Form -->
+            <form action="{{ url_for('add_to_wishlist') }}" method="POST" style="display: inline;">
+                <input type="hidden" name="product_id" value="{{ product[0] }}">
+                <button type="submit">Wishlist</button>
+            </form>
         </div>
     {% endfor %}
     </div>

@@ -219,6 +219,9 @@ def add_to_cart():
     
     # Gets the current logged in user
     user = session.get('user')
+
+    # Gets the URL so it returns to either the store or wishlist page depending where the user is
+    url = request.form.get('url')
     
     # Insert into checkout table
     db = get_db()
@@ -227,8 +230,9 @@ def add_to_cart():
     db.commit()
     
     # Refreshes store page
-    return redirect(url_for('store'))
+    return redirect(url)
 
+# App route to add to wishlist
 @app.route('/add_to_wishlist', methods=['POST'])
 def add_to_wishlist():
     # Gets the product ID
@@ -243,8 +247,29 @@ def add_to_wishlist():
     cursor.execute("INSERT INTO wishlist (username, product_id) VALUES (?, ?)", (user, product_id))
     db.commit()
     
-    # Refreshes store page
+    # Refreshes the page the user is on
     return redirect(url_for('store'))
+
+# App route to remove from wishlist
+@app.route('/remove_from_wishlist', methods=['POST'])
+def remove_from_wishlist():
+    # Gets the product ID
+    product_id = request.form.get('product_id')
+    
+    # Gets the current logged in user
+    user = session.get('user')
+    
+    # Delete from wishlist table
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "DELETE FROM wishlist WHERE username = ? AND product_id = ?", 
+        (user, product_id)
+    )
+    db.commit()
+    
+    # Refreshes wishlist page
+    return redirect(url_for('wishlist'))
 
 # Runs the app
 if __name__ == '__main__':
