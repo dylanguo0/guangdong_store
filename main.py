@@ -240,12 +240,22 @@ def add_to_wishlist():
 
     # Gets the current logged in user
     user = session.get('user')
-    
-    # Insert into wishlist table
+
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO wishlist (username, product_id) VALUES (?, ?)", (user, product_id))
-    db.commit()
+
+    # Check if the user already has this item in their wishlist
+    cursor.execute("SELECT 1 FROM wishlist WHERE username = ? AND product_id = ?", (user, product_id))
+    wishlist_exists = cursor.fetchone()
+
+    if wishlist_exists:
+        all_database_data = database()
+        return render_template("store.html", database=all_database_data,
+                                error="Already wishlisted")
+    else:
+        # Insert into wishlist table
+        cursor.execute("INSERT INTO wishlist (username, product_id) VALUES (?, ?)", (user, product_id))
+        db.commit()
     
     # Refreshes the page the user is on
     return redirect(url_for('store'))
@@ -270,6 +280,31 @@ def remove_from_wishlist():
     
     # Refreshes wishlist page
     return redirect(url_for('wishlist'))
+
+# App route to remove from checkout
+@app.route('/remove_from_checkout', methods=['POST'])
+def remove_from_checkout():
+    # Gets the product ID
+    product_id = request.form.get('product_id')
+    
+    # Gets the current logged in user
+    user = session.get('user')
+    
+    # Delete from checkout table
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        """DELETE FROM checkout 
+        WHERE ROWID = (
+            SELECT ROWID FROM checkout 
+            WHERE username = ? AND product_id = ? 
+            LIMIT 1)""", 
+        (user, product_id)
+    )
+    db.commit()
+    
+    # Refreshes checkout page
+    return redirect(url_for('checkout'))
 
 # Runs the app
 if __name__ == '__main__':
