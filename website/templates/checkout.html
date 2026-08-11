@@ -28,8 +28,19 @@
     <div class="order-summary-card">
         <h2>Order Summary</h2>
         <p><strong>Total price:</strong> ${{ "%.2f" | format(database | map(attribute=3) | sum | float) }}</p>
-        <button type="button">Submit Order</button><br>
-        <button type="button" class="remove">Clear Cart</button><br>
+
+        <!-- Submit Order Form -->
+        <form action="{{ url_for('submit_order') }}" method="POST" style="display: inline;">
+            <button type="submit">Submit Order</button><br>
+        </form>
+        
+        <!-- Clear Cart Form -->
+        <form action="{{ url_for('clear_cart') }}" method="POST" style="display: inline;">
+            <button type="submit" class="remove">Clear Cart</button><br>
+        </form>
+        {% if error %}
+            <p style="color: red">{{ error }}</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

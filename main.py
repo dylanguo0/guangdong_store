@@ -1,4 +1,5 @@
 from flask import Flask, g, render_template, request, redirect, url_for, session
+from datetime import datetime
 import sqlite3
 
 # Defines the database constant
@@ -250,21 +251,11 @@ def add_to_wishlist():
     # Gets the current logged in user
     user = session.get('user')
 
+    # Insert into wishlist table
     db = get_db()
     cursor = db.cursor()
-
-    # Check if the user already has this item in their wishlist
-    cursor.execute("SELECT 1 FROM wishlist WHERE username = ? AND product_id = ?", (user, product_id))
-    wishlist_exists = cursor.fetchone()
-
-    if wishlist_exists:
-        all_database_data = database()
-        return render_template("store.html", database=all_database_data,
-                                error="Already wishlisted")
-    else:
-        # Insert into wishlist table
-        cursor.execute("INSERT INTO wishlist (username, product_id) VALUES (?, ?)", (user, product_id))
-        db.commit()
+    cursor.execute("INSERT INTO wishlist (username, product_id) VALUES (?, ?)", (user, product_id))
+    db.commit()
     
     # Refreshes the page the user is on
     return redirect(url_for('store'))
@@ -314,6 +305,66 @@ def remove_from_checkout():
     
     # Refreshes checkout page
     return redirect(url_for('checkout'))
+
+# App route to clear cart
+@app.route('/clear_cart', methods=['POST'])
+def clear_cart():    
+    # Gets the current logged in user
+    user = session.get('user')
+    
+    # Clears cart
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM checkout WHERE username = ?", (user,))
+    db.commit()
+    
+    # Refreshes checkout page
+    return redirect(url_for('checkout'))    
+
+@app.route('/submit_order', methods=['POST'])
+def submit_order():
+    # Gets the current logged in user
+    user = session.get('user')
+        
+    db = get_db()
+    cursor = db.cursor()
+    
+    # Gets all items in checkout for this user
+    cursor.execute("SELECT product_id FROM checkout WHERE username = ?", (user,))
+    cart_items = cursor.fetchall()
+
+    # Gives an error if no items in checkout
+    if not cart_items:
+        return render_template('checkout.html', 
+                        error="Checkout empty")
+      
+    # Creeates new order ID for the order
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    cursor.execute(
+        "INSERT INTO order_ids (username, order_date) VALUES (?, ?)",
+        (user, current_time)
+    )
+    
+    # Gets the ID generated to insert into the next table
+    order_id = cursor.lastrowid
+    
+    # Insert each checkout item into order_items
+    for item in cart_items:
+        # Gets the product ID
+        product_id = item[0]
+
+        # Insert this one product into order_items
+        cursor.execute(
+            "INSERT INTO order_items (order_id, product_id) VALUES (?, ?)",
+            (order_id, product_id)
+        )
+        
+    # Clears the checkout table for the user
+    cursor.execute("DELETE FROM checkout WHERE username = ?", (user,))
+
+    # Commit all transactions at once safely
+    db.commit()
+    return render_template('checkout.html', error=None)
 
 # Runs the app
 if __name__ == '__main__':
