@@ -95,6 +95,12 @@ button.remove:active {
     background-color: #F25959;
 }
 
+button.disabled {
+    background-color: #666666;
+    color: white;
+    opacity: 0.5;
+}
+
 .product-card {
     width: 170px;
     border: 3px solid black;

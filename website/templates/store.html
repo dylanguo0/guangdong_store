@@ -46,7 +46,12 @@
             <!-- Wishlist Form -->
                 <form action="{{ url_for('add_to_wishlist') }}" method="POST" style="display: inline;">
                     <input type="hidden" name="product_id" value="{{ product[0] }}">
-                    <button type="submit">Wishlist</button>
+                    <!-- Greys out button if already in user's wishlist -->
+                    {% if product[0] in wishlist_items %}
+                        <button type="button" class="disabled" disabled>Wishlist</button>
+                    {% else %}
+                        <button type="submit">Wishlist</button>
+                    {% endif %}
                 </form>
             {% else %}
                 <!-- Redirects to login if not logged in -->

@@ -43,8 +43,17 @@ def store():
     # Gets the tables from the database
     all_database_data = database()
 
+    # Finds all the wishlist items
+    wishlist_items = []
+    if 'user' in session:
+        current_user = session.get('user')
+        wishlist_items = [
+            row[1] for row in all_database_data['wishlist'] 
+            if row[0] == current_user
+        ]
+
     # Renders the store page
-    return render_template('store.html', database=all_database_data)
+    return render_template('store.html', database=all_database_data, wishlist_items=wishlist_items)
 
 # App route for wishlist page
 @app.route('/wishlist')
