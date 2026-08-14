@@ -14,8 +14,8 @@
         <!-- Loop to display every order product -->
         {% for product in database %}
             <div class="orders-row">
-                <p>{{ product[8] }}</p>
-                <p>${{ "%.2f" | format(product[9] | float) }}</p>
+                <p>{{ product[2] }}</p>
+                <p>${{ "%.2f" | format(product[3] | float) }}</p>
             </div>
         {% endfor %}
     </div>
