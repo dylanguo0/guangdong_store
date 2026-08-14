@@ -6,24 +6,28 @@
     <!-- Card for the filters to go into -->
     <div class="filters-card">
         <h2>Filters</h2>
-        <h3>Category</h3>
-            <input type="checkbox" id="category1" name="category1" value="hygiene">
-            <label for="category1">Hygiene</label><br>
-            <input type="checkbox" id="category2" name="category2" value="furniture">
-            <label for="category1">Furniture</label><br>
-            <input type="checkbox" id="category3" name="category3" value="electronics">
-            <label for="category1">Electronics</label><br>
-        <h3>Price</h3>
-            <label for="minimum">Minimum</label>
-            <input type="number" id="minimum" name="minimum" placeholder="$">
-            <label for="number">Maximum</label>
-            <input type="number" id="maximum" name="maximum" placeholder="$">
-        <button type="button">Filter</button>
+        
+        <!-- Filters Form -->
+        <form action="{{ url_for('store') }}">
+            <h3>Category</h3>
+                <input type="checkbox" id="category1" name="category" value="Hygiene" {% if not selected_categories or 'Hygiene' in selected_categories %}checked{% endif %}>
+                <label for="category1">Hygiene</label><br>
+                <input type="checkbox" id="category2" name="category" value="Furniture" {% if not selected_categories or 'Furniture' in selected_categories %}checked{% endif %}>
+                <label for="category2">Furniture</label><br>
+                <input type="checkbox" id="category3" name="category" value="Electronics" {% if not selected_categories or 'Electronics' in selected_categories %}checked{% endif %}>
+                <label for="category3">Electronics</label><br>
+            <h3>Price</h3>
+                <label for="minimum">Minimum</label>
+                <input type="number" id="minimum" name="minimum" placeholder="$" value="{{ min_price or '' }}">
+                <label for="number">Maximum</label>
+                <input type="number" id="maximum" name="maximum" placeholder="$" value="{{ max_price or '' }}">
+            <button type="submit">Filter</button>
+        </form>
     </div>
     <!-- Grid for the products to go in -->
     <div class="product-grid">
     <!-- Loop to display every product and its image -->
-    {% for product in database['products'] %}
+    {% for product in filtered_products %}
         <!-- Card for the products to go into -->
         <div class="product-card">
             <img src="{{ product[4] }}" alt="{{ product[2] }}">

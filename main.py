@@ -44,6 +44,43 @@ def store():
     # Gets the tables from the database
     all_database_data = database()
 
+    # Maps the category IDs to the categories
+    category_map = {row[0]: row[1] for row in all_database_data['categories']}
+
+    # Gets the selected filters and price range
+    selected_categories = request.args.getlist('category') 
+    min_price = request.args.get('minimum')
+    max_price = request.args.get('maximum')
+
+    if not request.args:
+        selected_categories = list(category_map.values())
+
+    filtered_products = []
+
+    # Loops through all products and checks if it fits the filters
+    for product in all_database_data['products']:
+        # Gets category ID and price
+        product_category_id = product[1]
+        product_price = product[3]
+        
+        # Gets the category name from the ID
+        product_category_name = category_map.get(product_category_id)
+
+        # Checks category filter
+        if product_category_name not in selected_categories:
+            continue
+
+        # Checks min price filter
+        if min_price and product_price < float(min_price):
+            continue
+
+        # Checks max price filter
+        if max_price and product_price > float(max_price):
+            continue
+
+        # Appends the product if it matches the filters
+        filtered_products.append(product)
+
     # Finds all the wishlist items
     wishlist_items = []
     if 'user' in session:
@@ -53,8 +90,15 @@ def store():
             if row[0] == current_user
         ]
 
-    # Renders the store page
-    return render_template('store.html', database=all_database_data, wishlist_items=wishlist_items)
+    # Renders the store page with the filters
+    return render_template(
+        'store.html', 
+        filtered_products=filtered_products, 
+        wishlist_items=wishlist_items,
+        selected_categories=selected_categories,
+        min_price=min_price,
+        max_price=max_price
+    )
 
 # App route for wishlist page
 @app.route('/wishlist')
