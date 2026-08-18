@@ -1,5 +1,5 @@
 from flask import Flask, g, render_template, request, redirect, url_for, session
-from datetime import datetime
+from datetime import datetime, timezone
 import sqlite3
 
 # Defines the database constant
@@ -365,6 +365,7 @@ def clear_cart():
     # Refreshes checkout page
     return redirect(url_for('checkout'))    
 
+# App route to submit order
 @app.route('/submit_order', methods=['POST'])
 def submit_order():
     # Gets the current logged in user
@@ -383,7 +384,7 @@ def submit_order():
                         error="Checkout empty")
       
     # Creeates new order ID for the order
-    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    current_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     cursor.execute(
         "INSERT INTO order_ids (username, order_date) VALUES (?, ?)",
         (user, current_time)
