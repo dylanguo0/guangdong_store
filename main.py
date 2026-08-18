@@ -1,5 +1,6 @@
 from flask import Flask, g, render_template, request, redirect, url_for, session
 from datetime import datetime, timezone
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
 # Defines the database constant
@@ -180,28 +181,26 @@ def login():
     if request.method == "POST":
         # Get the form data
         username = request.form.get("username")
-        password = request.form.get("password")
+        password_attempt = request.form.get("password", "")
 
-        # Fetch all data
-        all_tables = database()
-        
-        # Extract only the users table
-        users = all_tables.get("customers", []) 
+        # Gets the password from the user
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT password FROM customers WHERE username = ?", (username,))
+        row = cursor.fetchone()
 
-        # Loop through the list to look for a match
-        user_found = False
-        for user in users:
-            if user[0] == username and user[1] == password:
-                user_found = True
-                break
+        # Checks if user exists
+        if row is not None:
+            stored_hash = row[0]
+            
+            # Check credentials using the stored hash
+            if check_password_hash(stored_hash, password_attempt):
+                session['user'] = username
+                return redirect(url_for("store"))
 
-        # Check credentials
-        if user_found:
-            session['user'] = username
-            return redirect(url_for("store"))
-        else:
-            return render_template("login.html",
-                                   error="Invalid username or password")
+        # Returns error if credentials are wrong
+        return render_template("login.html",
+                                error="Invalid username or password")
 
     # Renders the login page
     return render_template('login.html', error=None)
@@ -217,6 +216,8 @@ def signup():
         last_name = request.form.get("last_name")
         username = request.form.get("username")
         password = request.form.get("password")
+
+        hashed_password = generate_password_hash(password)
 
         # Fetch all data
         all_tables = database()
@@ -246,7 +247,7 @@ def signup():
             """
 
             # Saves the database
-            cursor.execute(query, (username, password, first_name, last_name, address, email))
+            cursor.execute(query, (username, hashed_password, first_name, last_name, address, email))
             db.commit()
 
             # Logs them in then goes to the store page
@@ -383,7 +384,7 @@ def submit_order():
         return render_template('checkout.html', 
                         error="Checkout empty")
       
-    # Creeates new order ID for the order
+    # Creates new order ID for the order
     current_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     cursor.execute(
         "INSERT INTO order_ids (username, order_date) VALUES (?, ?)",
