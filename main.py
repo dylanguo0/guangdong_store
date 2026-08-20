@@ -200,7 +200,8 @@ def login():
 
         # Returns error if credentials are wrong
         return render_template("login.html",
-                                error="Invalid username or password")
+                                error="Invalid username or password",
+                                username=username, password=password_attempt)
 
     # Renders the login page
     return render_template('login.html', error=None)
@@ -235,7 +236,8 @@ def signup():
         # Gives error if username is already in use
         if username_exists:
             return render_template("signup.html", 
-                                   error="Username already in use")
+                                   error="Username already in use",
+                                   email=email, address=address, first_name=first_name, last_name=last_name, username=username, password=password)
         else:
             db = get_db()
             cursor = db.cursor()

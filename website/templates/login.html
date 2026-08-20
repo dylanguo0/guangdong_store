@@ -4,16 +4,20 @@
 <!-- Card for the login details to go in -->
 <div class="login-card">
     <h2>Log In</h2>
+    <!-- Login form -->
     <form method="POST">
         <h3>Username</h3>
-        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required value="{{ username }}">
         <h3>Password</h3>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required value="{{ password }}">
         <button type="submit">Log In</button><br>
     </form>
+
+    <!-- Error if credentials are wrong -->
     {% if error %}
         <p style="color: red">{{ error }}</p>
     {% endif %}
+
     <p>No account?</p> <a href="{{ url_for('signup') }}">Sign Up</a>
 </div>
 {% endblock %}

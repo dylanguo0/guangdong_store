@@ -1,36 +1,42 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>Sign Up</h1>
+<!-- Card for the signup details to go in -->
 <div class="signup-card">
     <h2>Sign Up</h2>
+    <!-- Signup form  -->
     <form action="/signup" method="post">
+
+        <!-- Grid to enter each detail of the user -->
         <div class="signup-grid" method="post">
             <div>
                 <h3>Email</h3>
-                <input type="text" id="email" name="email" placeholder="Email" required>
+                <input type="text" id="email" name="email" placeholder="Email" required value="{{ email }}">
             </div>
             <div>
                 <h3>Address</h3>
-                <input type="text" id="address" name="address" placeholder="Address" required>
+                <input type="text" id="address" name="address" placeholder="Address" required value="{{ address }}">
             </div>
             <div>
                 <h3>First name</h3>
-                <input type="text" id="first_name" name="first_name" placeholder="First name" required>
+                <input type="text" id="first_name" name="first_name" placeholder="First name" required value="{{ first_name }}">
             </div>
             <div>
                 <h3>Last name</h3>
-                <input type="text" id="last_name" name="last_name" placeholder="Last name" required>
+                <input type="text" id="last_name" name="last_name" placeholder="Last name" required value="{{ last_name }}">
             </div>
             <div>
                 <h3>Username</h3>
-                <input type="text" id="username" name="username" placeholder="Username" required>
+                <input type="text" id="username" name="username" placeholder="Username" required value="{{ username }}">
             </div>
             <div>
                 <h3>Password</h3>
-                <input type="password" id="password" name="password" placeholder="Password" required>
+                <input type="password" id="password" name="password" placeholder="Password" required value="{{ password }}">
             </div>
         </div>
         <button type="submit">Sign Up</button><br>
+
+        <!-- Error if username already in use -->
         {% if error %}
             <p style="color: red">{{ error }}</p>
         {% endif %}
