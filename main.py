@@ -414,6 +414,11 @@ def submit_order():
     db.commit()
     return render_template('checkout.html', error=None)
 
+# 404 Page
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
+
 # Runs the app
 if __name__ == '__main__':
     app.run(debug=True)

@@ -277,6 +277,19 @@ label {
     margin: auto;
 }
 
+.page-404 {
+    text-align: center;
+}
+
+.page-404 h1 {
+    font-size: 100px;
+}
+
+.page-404 h2 {
+    font-size: 50px;
+    color: white;
+}
+
 /* GRIDS */
 .product-grid {
     display: grid;
