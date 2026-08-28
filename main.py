@@ -1,6 +1,7 @@
 from flask import Flask, g, render_template, request, redirect, url_for, session
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
+import re
 import sqlite3
 
 # Defines the database constant
@@ -218,6 +219,21 @@ def signup():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        if not (3 <= len(username) <= 20) or ' ' in username:
+            return render_template("signup.html", 
+                                    error="Username must be between 3 and 20 characters and cannot contain spaces",
+                                    email=email, address=address, first_name=first_name, last_name=last_name, username=username, password=password)
+
+        # Password requirements
+        password_regex = r"^(?=.*\d)(?=.*[A-Z])(?=.*\W).{8,}$"
+
+        # Checks if passwords passes the requirements
+        if not re.match(password_regex, password):
+            return render_template("signup.html", 
+                                    error="Password must be at least 8 characters long, contain at least one capital, special character, and number",
+                                    email=email, address=address, first_name=first_name, last_name=last_name, username=username, password=password)
+
+        # Hashes the password
         hashed_password = generate_password_hash(password)
 
         # Fetch all data
