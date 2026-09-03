@@ -219,6 +219,7 @@ def signup():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        # Checks if username meets requirements
         if not (3 <= len(username) <= 20) or ' ' in username:
             return render_template("signup.html", 
                                     error="Username must be between 3 and 20 characters and cannot contain spaces",
