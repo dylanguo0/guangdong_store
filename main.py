@@ -41,7 +41,7 @@ def database():
     return all_database_data
 
 # App route for store page
-@app.route('/store')
+@app.route('/')
 def store():
     # Gets the tables from the database
     all_database_data = database()
@@ -177,7 +177,7 @@ def profile():
     return render_template('profile.html', user_info=user_info, database=order_data)
 
 # App route for login page
-@app.route('/', methods=["GET", "POST"])
+@app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         # Get the form data
