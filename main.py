@@ -105,6 +105,11 @@ def store():
 # App route for wishlist page
 @app.route('/wishlist')
 def wishlist():
+    # Redirects if the user is not logged in
+    if 'user' not in session:
+        return render_template('login.html', 
+                               error="You need to login first to view your wishlist")
+    
     db = get_db()
     cursor = db.cursor()
 
@@ -128,6 +133,11 @@ def wishlist():
 # App route for checkout page
 @app.route('/checkout')
 def checkout():
+    # Redirects if the user is not logged in
+    if 'user' not in session:
+        return render_template('login.html', 
+                               error="You need to login first to view your checkout")
+    
     db = get_db()
     cursor = db.cursor()
 
@@ -288,6 +298,11 @@ def logout():
 # App route to add to cart
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
+    # Redirects if the user is not logged in
+    if 'user' not in session:
+        return render_template('login.html', 
+                               error="You need to login first to add to cart")
+    
     # Gets the product ID
     product_id = request.form.get('product_id')
     
@@ -309,6 +324,11 @@ def add_to_cart():
 # App route to add to wishlist
 @app.route('/add_to_wishlist', methods=['POST'])
 def add_to_wishlist():
+    # Redirects if the user is not logged in
+    if 'user' not in session:
+        return render_template('login.html', 
+                               error="You need to login first to add to wishlist")
+    
     # Gets the product ID
     product_id = request.form.get('product_id')
 
