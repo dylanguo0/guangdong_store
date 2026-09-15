@@ -19,7 +19,7 @@
                 <!-- Remove from checkout Form -->
                 <form action="{{ url_for('remove_from_checkout') }}" method="POST" style="display: inline;">
                     <input type="hidden" name="product_id" value="{{ product[0] }}">
-                    <button type="submit" class="remove">Remove</button>
+                    <button type="submit" class="remove cart-remove">Remove</button>
                 </form>
             </div>
         {% endfor %}

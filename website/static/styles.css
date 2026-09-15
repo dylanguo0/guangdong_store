@@ -11,9 +11,15 @@ header {
     left: 5px;
 }
 
+@media screen and (max-width: 700px) {
+  header {
+    display: none;
+  }
+}
+
 a.navbar {
-    margin-left: 25px;
-    margin-right: 25px;
+    margin-left: 2vw;
+    margin-right: 2vw;
     text-decoration: none;
     font-size: 25px;
 }
@@ -107,6 +113,11 @@ button.remove:active {
 button.disabled {
     background-color: #666666;
     opacity: 0.5;
+}
+
+.cart-remove {
+    width: 12vw;
+    max-width: 150px;
 }
 
 /* Sets up the products for the store page */
@@ -256,14 +267,17 @@ input[type="checkbox"] {
 /* GRIDS */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(170px, 195px));
     gap: 20px;
     padding: 20px;
+    flex-grow: 1;
+    min-width: 0;
+    max-width: 1150px; 
 }
 
 .wishlist-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(510px, 1fr));
     gap: 20px;
     padding: 20px;
 }
