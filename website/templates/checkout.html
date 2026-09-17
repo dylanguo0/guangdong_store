@@ -8,17 +8,19 @@
         <!-- Headings for the products -->
         <div class="checkout-header">
             <b>Products</b>
+            <b>Quantity</b>
             <b>Price</b>
             <b>Actions</b>
         </div>
         <!-- Loop to display every checkout product -->
-        {% for product in database %}
+        {% for name, details in database.items() %}
             <div class="checkout-row">
-                <p>{{ product[2] }}</p>
-                <p>${{ "%.2f" | format(product[3] | float) }}</p>
+                <p>{{ name }}</p>
+                <p>x{{ details.quantity }}</p>
+                <p>${{ "%.2f" | format(details.price * details.quantity) }}</p>
                 <!-- Remove from checkout Form -->
                 <form action="{{ url_for('remove_from_checkout') }}" method="POST" style="display: inline;">
-                    <input type="hidden" name="product_id" value="{{ product[0] }}">
+                    <input type="hidden" name="product_id" value="{{ details.id }}">
                     <button type="submit" class="remove cart-remove">Remove</button>
                 </form>
             </div>
@@ -27,7 +29,7 @@
     <!-- Total price and submit order -->
     <div class="order-summary-card">
         <h2>Order Summary</h2>
-        <p><strong>Total price:</strong> ${{ "%.2f" | format(database | map(attribute=3) | sum | float) }}</p>
+        <p><strong>Total price:</strong> ${{ "%.2f" | format(total) }}</p>
 
         <!-- Submit Order Form -->
         <form action="{{ url_for('submit_order') }}" method="POST" style="display: inline;">

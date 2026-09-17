@@ -9,13 +9,15 @@
         <h2>Orders</h2>
         <div class="orders-header">
             <b>Products</b>
-            <b>Price</b>
+            <b>Quantity</b>
+            <b>Total Price</b>
         </div>
-        <!-- Loop to display every order product -->
-        {% for product in database %}
+        <!-- Loop to display every order product and its quantity -->
+        {% for name, details in database.items() %}
             <div class="orders-row">
-                <p>{{ product[2] }}</p>
-                <p>${{ "%.2f" | format(product[3] | float) }}</p>
+                <p>{{ name }}</p>
+                <p>x{{ details.quantity }}</p>
+                <p>${{ "%.2f" | format(details.price * details.quantity) }}</p>
             </div>
         {% endfor %}
     </div>

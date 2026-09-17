@@ -155,8 +155,28 @@ def checkout():
     cursor.execute(query, (user,))
     checkout_data = cursor.fetchall()
 
+    # Dictionary for every checked out product and its quantity
+    grouped_checkout = {}
+
+    total_price = 0
+
+    # Loop through every checked out product
+    for row in checkout_data:
+        product_id = row[0]
+        product_name = row[2]
+        price = float(row[3])
+
+        # Finds the total price
+        total_price += price
+
+        # Updates quantity if product is repeated
+        if product_name in grouped_checkout:
+            grouped_checkout[product_name]["quantity"] += 1
+        else:
+            grouped_checkout[product_name] = {"id": product_id, "price": price, "quantity": 1}
+
     # Renders the checkout page
-    return render_template('checkout.html', database=checkout_data)
+    return render_template('checkout.html', total=total_price, database=grouped_checkout)
 
 # App route for profile page
 @app.route('/profile')
@@ -183,8 +203,22 @@ def profile():
     cursor.execute(query, (user,))
     order_data = cursor.fetchall()
 
+    # Dictionary for every product and its quantity
+    grouped_orders = {}
+
+    # Loop through every order
+    for row in order_data:
+        product_name = row[2]
+        price = float(row[3])
+
+        # Updates quantity if product is repeated
+        if product_name in grouped_orders:
+            grouped_orders[product_name]["quantity"] += 1
+        else:
+            grouped_orders[product_name] = {"price": price, "quantity": 1}
+
     # Renders the profile page
-    return render_template('profile.html', user_info=user_info, database=order_data)
+    return render_template("profile.html", user_info=user_info, database=grouped_orders)
 
 # App route for login page
 @app.route('/login', methods=["GET", "POST"])
