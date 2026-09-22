@@ -412,11 +412,7 @@ def remove_from_checkout():
     db = get_db()
     cursor = db.cursor()
     cursor.execute(
-        """DELETE FROM checkout 
-        WHERE ROWID = (
-            SELECT ROWID FROM checkout 
-            WHERE username = ? AND product_id = ? 
-            LIMIT 1)""", 
+        """DELETE FROM checkout WHERE username = ? AND product_id = ?""", 
         (user, product_id)
     )
     db.commit()
@@ -455,7 +451,9 @@ def submit_order():
     # Gives an error if no items in checkout
     if not cart_items:
         return render_template('checkout.html', 
-                        error="Checkout empty")
+                               error="Checkout empty", 
+                               database={}, 
+                               total=0)
       
     # Creates new order ID for the order
     current_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
@@ -483,12 +481,63 @@ def submit_order():
 
     # Commit all transactions at once safely
     db.commit()
-    return render_template('checkout.html', error=None)
+    return redirect(url_for('checkout'))
 
 # 404 Page
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
+
+# App route to decrease quantity
+@app.route('/decrease-qty', methods=['POST'])
+def decrease_qty():
+    # Gets the product ID
+    product_id = request.form.get('product_id')
+    
+    # Gets the current logged in user
+    user = session.get('user')
+    
+    # Delete from checkout table
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        """DELETE FROM checkout 
+        WHERE ROWID = (SELECT ROWID FROM checkout 
+                        WHERE username = ? AND product_id = ? 
+                        LIMIT 1)""", 
+        (user, product_id)
+    )
+    db.commit()
+    
+    # Refreshes checkout page
+    return redirect(url_for('checkout'))
+
+# App route to increase quantity
+@app.route('/increase_qty', methods=['POST'])
+def increase_qty():
+    # Gets the current logged in user
+    user = session.get('user')
+        
+    db = get_db()
+    cursor = db.cursor()
+
+    # Gets the product ID
+    product_id = request.form.get('product_id')
+    
+    # Gets the current logged in user
+    user = session.get('user')
+
+    # Gets the URL so it returns to either the store or wishlist page depending where the user is
+    url = request.form.get('url')
+    
+    # Insert into checkout table
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO checkout (username, product_id) VALUES (?, ?)", (user, product_id))
+    db.commit()
+
+    # Refreshes checkout page
+    return redirect(url_for('checkout'))
 
 # Runs the app
 if __name__ == '__main__':

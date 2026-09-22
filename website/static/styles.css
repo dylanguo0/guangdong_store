@@ -184,7 +184,7 @@ input[type="checkbox"] {
     align-items: start;
 }
 
-/* Sets up the checkout page */
+/* Sets up the checkout */
 .checkout-card {
     width: 1000px;
     border: 3px solid black;
@@ -203,6 +203,19 @@ input[type="checkbox"] {
     margin: auto;
 }
 
+.quantity-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.button-qty {
+    width: 25px;
+    margin: auto;
+}
+
+/* Sets up the order summary */
 .order-summary-card {
     width: 500px;
     border: 3px solid black;
@@ -215,6 +228,7 @@ input[type="checkbox"] {
     margin: 10px 0;
 }
 
+/* Sets up the profile page */
 .orders-card {
     width: 500px;
     border: 3px solid black;
@@ -224,7 +238,6 @@ input[type="checkbox"] {
     gap: 20px;
 }
 
-/* Sets up the profile page */
 .details-card {
     width: 500px;
     border: 3px solid black;
@@ -233,6 +246,7 @@ input[type="checkbox"] {
     gap: 20px;
 }
 
+/* Sets up login page */
 .login-card {
     width: 300px;
     border: 3px solid black;
@@ -246,6 +260,7 @@ input[type="checkbox"] {
     margin-top: 25px;
 }
 
+/* Sets up signup page */
 .signup-card {
     width: 600px;
     border: 3px solid black;

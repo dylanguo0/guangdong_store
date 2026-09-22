@@ -16,7 +16,31 @@
         {% for name, details in database.items() %}
             <div class="checkout-row">
                 <p>{{ name }}</p>
-                <p>x{{ details.quantity }}</p>
+
+                <!-- Div for quantity and quantity control -->
+                <div class="quantity-control">
+                    <!-- Form for decreasing quantity -->
+                    <form action="{{ url_for('decrease_qty') }}" method="POST" style="display: inline;">
+                        <input type="hidden" name="product_id" value="{{ details.id }}">
+                        <input type="hidden" name="action" value="decrease">
+                        {% if details.quantity == 1 %}
+                            <button type="button" class="button-qty disabled" disabled>-</button>
+                        {% else %}
+                            <button type="submit" class="button-qty">-</button>
+                        {% endif %}
+                    </form>
+                    
+                    <!-- Quantity -->
+                    <p>x{{ details.quantity }}</p>
+
+                    <!-- Form for increasing quantity -->
+                    <form action="{{ url_for('increase_qty') }}" method="POST" style="display: inline;">
+                        <input type="hidden" name="product_id" value="{{ details.id }}">
+                        <input type="hidden" name="action" value="increase">
+                        <button type="submit" class="button-qty">+</button>
+                    </form>
+                </div>
+
                 <p>${{ "%.2f" | format(details.price * details.quantity) }}</p>
                 <!-- Remove from checkout Form -->
                 <form action="{{ url_for('remove_from_checkout') }}" method="POST" style="display: inline;">
