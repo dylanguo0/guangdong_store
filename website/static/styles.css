@@ -33,7 +33,7 @@ nav {
 }
 
 /* Sets up colours */
-header, a.navbar, h1, button.disabled, .page-404, .page-405, h2 {
+header, a.navbar, h1, button.disabled, .page-404, .page-405 {
     color: white
 }
 
