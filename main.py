@@ -1,38 +1,44 @@
-from flask import Flask, g, render_template, request, redirect, url_for, session
-from datetime import datetime, timezone
-from werkzeug.security import generate_password_hash, check_password_hash
+""" Runs the website with all the app routes to perform the tasks """
+
 import re
 import sqlite3
+from datetime import datetime, timezone
+from flask import Flask, g, render_template, request, redirect, url_for, session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Defines the database constant
 DATABASE = 'guangdong_store.db'
 
 app = Flask(__name__,
-            template_folder='website/templates', 
+            template_folder='website/templates',
             static_folder='website/static')
 
 app.config['SECRET_KEY'] = 'test'
 
 def get_db():
+    """ Opens the databse """
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
     return db
 
 @app.teardown_appcontext
-def close_connection(exception):
+def close_connection():
+    """ Closes the database """
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
 
 # Gets the database
 def database():
+    """ Gets the database tables """
     db = get_db()
     cursor = db.cursor()
 
     # Define the database tables
-    tables = ['products', 'customers', 'wishlist', 'categories', 'checkout', 'order_ids', 'order_items']
-    
+    tables = ['products', 'customers', 'wishlist', 'categories',
+              'checkout', 'order_ids', 'order_items']
+
     # Loops through each table and fetches it's rows
     all_database_data = {}
     for table in tables:
@@ -43,6 +49,7 @@ def database():
 # App route for store page
 @app.route('/')
 def store():
+    """ Opens the store page """
     # Gets the tables from the database
     all_database_data = database()
 
@@ -50,7 +57,7 @@ def store():
     category_map = {row[0]: row[1] for row in all_database_data['categories']}
 
     # Gets the selected filters and price range
-    selected_categories = request.args.getlist('category') 
+    selected_categories = request.args.getlist('category')
     min_price = request.args.get('minimum')
     max_price = request.args.get('maximum')
 
@@ -64,7 +71,7 @@ def store():
         # Gets category ID and price
         product_category_id = product[1]
         product_price = product[3]
-        
+
         # Gets the category name from the ID
         product_category_name = category_map.get(product_category_id)
 
@@ -88,14 +95,14 @@ def store():
     if 'user' in session:
         current_user = session.get('user')
         wishlist_items = [
-            row[1] for row in all_database_data['wishlist'] 
+            row[1] for row in all_database_data['wishlist']
             if row[0] == current_user
         ]
 
     # Renders the store page with the filters
     return render_template(
         'store.html', 
-        filtered_products=filtered_products, 
+        filtered_products=filtered_products,
         wishlist_items=wishlist_items,
         selected_categories=selected_categories,
         min_price=min_price,
@@ -105,11 +112,12 @@ def store():
 # App route for wishlist page
 @app.route('/wishlist')
 def wishlist():
+    """ Opens the wishlist page """
     # Redirects if the user is not logged in
     if 'user' not in session:
-        return render_template('login.html', 
+        return render_template('login.html',
                                error="You need to login first to view your wishlist")
-    
+
     db = get_db()
     cursor = db.cursor()
 
@@ -119,7 +127,7 @@ def wishlist():
             LEFT JOIN products ON products.product_id = wishlist.product_id
             WHERE wishlist.username = ?
     """
-    
+
     # Which user's wishlist to look at
     user = session.get('user')
 
@@ -133,11 +141,12 @@ def wishlist():
 # App route for checkout page
 @app.route('/checkout')
 def checkout():
+    """ Opens the checkout page """
     # Redirects if the user is not logged in
     if 'user' not in session:
-        return render_template('login.html', 
+        return render_template('login.html',
                                error="You need to login first to view your checkout")
-    
+
     db = get_db()
     cursor = db.cursor()
 
@@ -147,7 +156,7 @@ def checkout():
             LEFT JOIN products ON products.product_id = checkout.product_id
             WHERE checkout.username = ?
     """
-    
+
     # Which user's wishlist to look at
     user = session.get('user')
 
@@ -181,6 +190,7 @@ def checkout():
 # App route for profile page
 @app.route('/profile')
 def profile():
+    """ Opens the profile page """
     db = get_db()
     cursor = db.cursor()
 
@@ -223,6 +233,7 @@ def profile():
 # App route for login page
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    """ Logs the user in """
     if request.method == "POST":
         # Get the form data
         username = request.form.get("username")
@@ -237,7 +248,7 @@ def login():
         # Checks if user exists
         if row is not None:
             stored_hash = row[0]
-            
+
             # Check credentials using the stored hash
             if check_password_hash(stored_hash, password_attempt):
                 session['user'] = username
@@ -254,6 +265,7 @@ def login():
 # App route for signup page
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
+    """ Creates an account for the user """
     if request.method == "POST":
         # Get the form data
         email = request.form.get("email")
@@ -265,57 +277,62 @@ def signup():
 
         # Checks if username meets requirements
         if not (3 <= len(username) <= 20) or ' ' in username:
-            return render_template("signup.html", 
-                                    error="Username must be between 3 and 20 characters and cannot contain spaces",
-                                    email=email, address=address, first_name=first_name, last_name=last_name, username=username, password=password)
+            return render_template("signup.html",
+                                    error="Username must be between 3 and 20 " \
+                                    "characters and cannot contain spaces",
+                                    email=email, address=address, first_name=first_name,
+                                    last_name=last_name, username=username, password=password)
 
         # Password requirements
         password_regex = r"^(?=.*\d)(?=.*[A-Z])(?=.*\W).{8,}$"
 
         # Checks if passwords passes the requirements
         if not re.match(password_regex, password):
-            return render_template("signup.html", 
-                                    error="Password must be at least 8 characters long, contain at least one capital, special character, and number",
-                                    email=email, address=address, first_name=first_name, last_name=last_name, username=username, password=password)
+            return render_template("signup.html",
+                                    error="Password must be at least 8 characters long, " \
+                                    "contain at least one capital, special character, and number",
+                                    email=email, address=address, first_name=first_name,
+                                    last_name=last_name, username=username, password=password)
 
         # Hashes the password
         hashed_password = generate_password_hash(password)
 
         # Fetch all data
         all_tables = database()
-        
+
         # Extract only the users table
-        users = all_tables.get("customers", []) 
+        users = all_tables.get("customers", [])
 
         # Loop through the list to check if username is already taken
         username_exists = False
         for user in users:
-            if user[0] == username:  
+            if user[0] == username:
                 username_exists = True
                 break
 
         # Gives error if username is already in use
         if username_exists:
-            return render_template("signup.html", 
+            return render_template("signup.html",
                                    error="Username already in use",
-                                   email=email, address=address, first_name=first_name, last_name=last_name, username=username, password=password)
-        else:
-            db = get_db()
-            cursor = db.cursor()
-            
-            # Insert the user into the database
-            query = """
-                INSERT INTO customers (username, password, first_name, last_name, address, email) 
-                VALUES (?, ?, ?, ?, ?, ?)
-            """
+                                   email=email, address=address, first_name=first_name,
+                                   last_name=last_name, username=username, password=password)
+        db = get_db()
+        cursor = db.cursor()
 
-            # Saves the database
-            cursor.execute(query, (username, hashed_password, first_name, last_name, address, email))
-            db.commit()
+        # Insert the user into the database
+        query = """
+            INSERT INTO customers (username, password, first_name, last_name, address, email) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        """
 
-            # Logs them in then goes to the store page
-            session['user'] = username
-            return redirect(url_for("store"))
+        # Saves the database
+        cursor.execute(query, (username, hashed_password,
+                               first_name, last_name, address, email))
+        db.commit()
+
+        # Logs them in then goes to the store page
+        session['user'] = username
+        return redirect(url_for("store"))
 
     # Renders the signup page initially
     return render_template('signup.html', error=None)
@@ -323,46 +340,49 @@ def signup():
 # App route to logout
 @app.route('/logout')
 def logout():
+    """ Logs the user out """
     # Logs out
-    session.clear() 
-    
+    session.clear()
+
     # Returns to login page
     return redirect(url_for('login'))
 
 # App route to add to cart
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
+    """ Adds a product to checkout cart """
     # Redirects if the user is not logged in
     if 'user' not in session:
-        return render_template('login.html', 
+        return render_template('login.html',
                                error="You need to login first to add to cart")
-    
+
     # Gets the product ID
     product_id = request.form.get('product_id')
-    
+
     # Gets the current logged in user
     user = session.get('user')
 
     # Gets the URL so it returns to either the store or wishlist page depending where the user is
     url = request.form.get('url')
-    
+
     # Insert into checkout table
     db = get_db()
     cursor = db.cursor()
     cursor.execute("INSERT INTO checkout (username, product_id) VALUES (?, ?)", (user, product_id))
     db.commit()
-    
+
     # Refreshes store page
     return redirect(url)
 
 # App route to add to wishlist
 @app.route('/add_to_wishlist', methods=['POST'])
 def add_to_wishlist():
+    """ Adds a product to wishlist """
     # Redirects if the user is not logged in
     if 'user' not in session:
-        return render_template('login.html', 
+        return render_template('login.html',
                                error="You need to login first to add to wishlist")
-    
+
     # Gets the product ID
     product_id = request.form.get('product_id')
 
@@ -374,19 +394,20 @@ def add_to_wishlist():
     cursor = db.cursor()
     cursor.execute("INSERT INTO wishlist (username, product_id) VALUES (?, ?)", (user, product_id))
     db.commit()
-    
+
     # Refreshes the page the user is on
     return redirect(url_for('store'))
 
 # App route to remove from wishlist
 @app.route('/remove_from_wishlist', methods=['POST'])
 def remove_from_wishlist():
+    """ Removes a product from wishlist """
     # Gets the product ID
     product_id = request.form.get('product_id')
-    
+
     # Gets the current logged in user
     user = session.get('user')
-    
+
     # Delete from wishlist table
     db = get_db()
     cursor = db.cursor()
@@ -395,19 +416,20 @@ def remove_from_wishlist():
         (user, product_id)
     )
     db.commit()
-    
+
     # Refreshes wishlist page
     return redirect(url_for('wishlist'))
 
 # App route to remove from checkout
 @app.route('/remove_from_checkout', methods=['POST'])
 def remove_from_checkout():
+    """ Removes a certain product from checkout """
     # Gets the product ID
     product_id = request.form.get('product_id')
-    
+
     # Gets the current logged in user
     user = session.get('user')
-    
+
     # Delete from checkout table
     db = get_db()
     cursor = db.cursor()
@@ -416,55 +438,57 @@ def remove_from_checkout():
         (user, product_id)
     )
     db.commit()
-    
+
     # Refreshes checkout page
     return redirect(url_for('checkout'))
 
 # App route to clear cart
 @app.route('/clear_cart', methods=['POST'])
-def clear_cart():    
+def clear_cart():
+    """ Clears cart from checkout """
     # Gets the current logged in user
     user = session.get('user')
-    
+
     # Clears cart
     db = get_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM checkout WHERE username = ?", (user,))
     db.commit()
-    
+
     # Refreshes checkout page
-    return redirect(url_for('checkout'))    
+    return redirect(url_for('checkout'))
 
 # App route to submit order
 @app.route('/submit_order', methods=['POST'])
 def submit_order():
+    """ Submits the order from checkout """
     # Gets the current logged in user
     user = session.get('user')
-        
+
     db = get_db()
     cursor = db.cursor()
-    
+
     # Gets all items in checkout for this user
     cursor.execute("SELECT product_id FROM checkout WHERE username = ?", (user,))
     cart_items = cursor.fetchall()
 
     # Gives an error if no items in checkout
     if not cart_items:
-        return render_template('checkout.html', 
-                               error="Checkout empty", 
-                               database={}, 
+        return render_template('checkout.html',
+                               error="Checkout empty",
+                               database={},
                                total=0)
-      
+
     # Creates new order ID for the order
     current_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     cursor.execute(
         "INSERT INTO order_ids (username, order_date) VALUES (?, ?)",
         (user, current_time)
     )
-    
+
     # Gets the ID generated to insert into the next table
     order_id = cursor.lastrowid
-    
+
     # Insert each checkout item into order_items
     for item in cart_items:
         # Gets the product ID
@@ -475,7 +499,7 @@ def submit_order():
             "INSERT INTO order_items (order_id, product_id) VALUES (?, ?)",
             (order_id, product_id)
         )
-        
+
     # Clears the checkout table for the user
     cursor.execute("DELETE FROM checkout WHERE username = ?", (user,))
 
@@ -485,23 +509,26 @@ def submit_order():
 
 # 404 Page
 @app.errorhandler(404)
-def page_not_found(error):
+def page_not_found():
+    """ Goes to 404 error page if page not found """
     return render_template('404.html'), 404
 
 #405 Page
 @app.errorhandler(405)
-def method_not_allowed_html(error):
+def method_not_allowed_html():
+    """ Goes to 405 error page if method not allowed """
     return render_template('405.html'), 405
 
 # App route to decrease quantity
 @app.route('/decrease-qty', methods=['POST'])
 def decrease_qty():
+    """ Decreases quantity of product """
     # Gets the product ID
     product_id = request.form.get('product_id')
-    
+
     # Gets the current logged in user
     user = session.get('user')
-    
+
     # Delete from checkout table
     db = get_db()
     cursor = db.cursor()
@@ -509,32 +536,30 @@ def decrease_qty():
         """DELETE FROM checkout 
         WHERE ROWID = (SELECT ROWID FROM checkout 
                         WHERE username = ? AND product_id = ? 
-                        LIMIT 1)""", 
+                        LIMIT 1)""",
         (user, product_id)
     )
     db.commit()
-    
+
     # Refreshes checkout page
     return redirect(url_for('checkout'))
 
 # App route to increase quantity
 @app.route('/increase_qty', methods=['POST'])
 def increase_qty():
+    """ Increases quantity of product """
     # Gets the current logged in user
     user = session.get('user')
-        
+
     db = get_db()
     cursor = db.cursor()
 
     # Gets the product ID
     product_id = request.form.get('product_id')
-    
+
     # Gets the current logged in user
     user = session.get('user')
 
-    # Gets the URL so it returns to either the store or wishlist page depending where the user is
-    url = request.form.get('url')
-    
     # Insert into checkout table
     db = get_db()
     cursor = db.cursor()
