@@ -33,7 +33,7 @@ nav {
 }
 
 /* Sets up colours */
-header, a.navbar, h1, button.disabled, .page-404 h2 {
+header, a.navbar, h1, button.disabled, .page-404, .page-405, h2 {
     color: white
 }
 
@@ -51,7 +51,7 @@ header, h3, p, b, a, button, label {
 }
 
 /* Sets up text alignment */
-nav, h1, h2, h3, .product-card, .wishlist-card, .checkout-card, .order-summary-card, .orders-card, .login-card, .signup-card, .page-404 {
+nav, h1, h2, h3, .product-card, .wishlist-card, .checkout-card, .order-summary-card, .orders-card, .login-card, .signup-card, .page-404, .page-405 {
     text-align: center;
 }
 
@@ -271,11 +271,11 @@ input[type="checkbox"] {
 }
 
 /* Sets up the 404 page */
-.page-404 h1 {
+.page-404 h1, .page-405 h1 {
     font-size: 100px;
 }
 
-.page-404 h2 {
+.page-404 h2, .page-405 h2 {
     font-size: 50px;
 }
 

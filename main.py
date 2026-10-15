@@ -488,6 +488,11 @@ def submit_order():
 def page_not_found(error):
     return render_template('404.html'), 404
 
+#405 Page
+@app.errorhandler(405)
+def method_not_allowed_html(error):
+    return render_template('405.html'), 405
+
 # App route to decrease quantity
 @app.route('/decrease-qty', methods=['POST'])
 def decrease_qty():
