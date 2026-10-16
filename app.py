@@ -23,7 +23,7 @@ def get_db():
     return db
 
 @app.teardown_appcontext
-def close_connection():
+def close_connection(exception):
     """ Closes the database """
     db = getattr(g, '_database', None)
     if db is not None:
@@ -509,13 +509,13 @@ def submit_order():
 
 # 404 Page
 @app.errorhandler(404)
-def page_not_found():
+def page_not_found(error):
     """ Goes to 404 error page if page not found """
     return render_template('404.html'), 404
 
 #405 Page
 @app.errorhandler(405)
-def method_not_allowed_html():
+def method_not_allowed_html(error):
     """ Goes to 405 error page if method not allowed """
     return render_template('405.html'), 405
 
